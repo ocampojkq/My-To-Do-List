@@ -80,8 +80,8 @@ body {
   position: fixed;
   top: -20px;
   left: 0;
-  width: 2px;
-  height: 1px;
+  width: .5px;
+  height: .5px;
 }
 
 
