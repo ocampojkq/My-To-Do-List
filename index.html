@@ -40,63 +40,121 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        // Load tasks from local storage
-        loadTasks();
+   // Add the following code inside the $(document).ready() function
 
-        // Add task
-        $("#addTaskBtn").on("click", function() {
-            var task = $("#taskInput").val().trim();
-            if (task !== "") {
-                var listItem = $("<li>").text(task);
-                var checkbox = $("<input>").attr("type", "checkbox");
-                var deleteBtn = $("<span>").addClass("delete-btn").html('<i class="fas fa-trash"></i>');
+// Load tasks from server
+loadTasks();
 
-                listItem.prepend(checkbox);
-                listItem.append(deleteBtn);
-                $(".task-list").append(listItem);
-                $("#taskInput").val("");
+// Add task
+$("#addTaskBtn").on("click", function() {
+  var task = $("#taskInput").val().trim();
+  if (task !== "") {
+    var listItem = $("<li>").text(task);
+    var checkbox = $("<input>").attr("type", "checkbox");
+    var deleteBtn = $("<span>").addClass("delete-btn").html('<i class="fas fa-trash"></i>');
 
-                // Save tasks to local storage
-                saveTasks();
-            }
-        });
+    listItem.prepend(checkbox);
+    listItem.append(deleteBtn);
+    $(".task-list").append(listItem);
+    $("#taskInput").val("");
 
-        // Remove task
-        $(document).on("click", ".delete-btn", function() {
-            $(this).parent().remove();
+    // Save task to server
+    saveTask(task);
+  }
+});
 
-            // Save tasks to local storage
-            saveTasks();
-        });
+// Remove task
+$(document).on("click", ".delete-btn", function() {
+  var listItem = $(this).parent();
+  var taskId = listItem.attr("data-id");
 
-        // Mark task as completed
-        $(document).on("change", ".task-list input[type='checkbox']", function() {
-            var listItem = $(this).parent();
-            if (this.checked) {
-                listItem.addClass("completed");
-            } else {
-                listItem.removeClass("completed");
-            }
+  listItem.remove();
 
-            // Save tasks to local storage
-            saveTasks();
-        });
+  // Remove task from server
+  deleteTask(taskId);
+});
 
-        // Load tasks from local storage
-        function loadTasks() {
-            var savedTasks = localStorage.getItem("tasks");
-            if (savedTasks) {
-                $(".task-list").html(savedTasks);
-            }
+// Mark task as completed
+$(document).on("change", ".task-list input[type='checkbox']", function() {
+  var listItem = $(this).parent();
+  var taskId = listItem.attr("data-id");
+  var completed = this.checked;
+
+  if (completed) {
+    listItem.addClass("completed");
+  } else {
+    listItem.removeClass("completed");
+  }
+
+  // Update task on server
+  updateTask(taskId, completed);
+});
+
+// Load tasks from server
+function loadTasks() {
+  $.ajax({
+    url: '/.netlify/functions/tasks',
+    method: 'GET',
+    success: function(response) {
+      var tasks = JSON.parse(response);
+      tasks.forEach(function(task) {
+        var listItem = $("<li>").text(task.task);
+        var checkbox = $("<input>").attr("type", "checkbox");
+        var deleteBtn = $("<span>").addClass("delete-btn").html('<i class="fas fa-trash"></i>');
+
+        if (task.completed) {
+          listItem.addClass("completed");
+          checkbox.prop("checked", true);
         }
 
-        // Save tasks to local storage
-        function saveTasks() {
-            var taskListHtml = $(".task-list").html();
-            localStorage.setItem("tasks", taskListHtml);
-        }
-    });
+        listItem.prepend(checkbox);
+        listItem.append(deleteBtn);
+        listItem.attr("data-id", task.id);
+        $(".task-list").append(listItem);
+      });
+    },
+    error: function(error) {
+      console.error(error);
+    }
+  });
+}
+
+// Save task to server
+function saveTask(task) {
+  $.ajax({
+    url: '/.https://kit-to-do-list.netlify.app/',
+    method: 'POST',
+    data: JSON.stringify({ task: task, completed: false }),
+    success: function(response) {
+      var taskId = response.ref["@ref"].id;
+      $(".task-list li:last-child").attr("data-id", taskId);
+    },
+    error: function(error) {
+      console.error(error);
+    }
+  });
+}
+
+// Remove task from server
+function deleteTask(taskId) {
+  $.ajax({
+    url: '/.https://kit-to-do-list.netlify.app/',
+    method: 'DELETE',
+    data: JSON.stringify({ id: taskId }),
+    success: function(response) {
+      console.log("Task deleted successfully");
+    },
+    error: function(error) {
+      console.error(error);
+    }
+  });
+}
+
+// Update task on server
+function updateTask(taskId, completed) {
+  // Send request to update task status on the server
+}
+
 </script>
 </body>
 </html>
