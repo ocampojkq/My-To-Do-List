@@ -23,6 +23,10 @@ body {
   }
 
 
+ul{
+  padding: 20px;
+}
+
   .card {
     background-color: #fff;
   }
@@ -39,7 +43,7 @@ body {
   .task-list li {
     list-style-type: none;
     padding: 10px;
-    border-bottom: 1px solid #e1e1e1;
+    border-bottom: 2px dotted #e1e1e1;
     color: #555;
     display: flex;
     justify-content: space-between;
@@ -66,8 +70,7 @@ body {
 
   .task-list .delete-btn:hover {
     text-decoration: underline;
- 
-  
+   
   }
 
   .add-task-form {
