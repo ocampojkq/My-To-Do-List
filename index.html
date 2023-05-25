@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;700&family=Inter:wght@400;700;800&family=Poppins&display=swap" rel="stylesheet">
+  
+  <title>My To-Do List</title>
+  <link rel="stylesheet" href="style.css">
+ 
+ 
+
+  
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <h4>My To-Do List</h4>
+      </div>
+      <div class="card-body">
+        <ul class="task-list"></ul>
+        <div class="add-task-form">
+          <div class="form-row align-items-center">
+            <div class="col">
+              <input type="text" id="taskInput" class="form-control" placeholder="Enter a task">
+            </div>
+            <div class="col-auto">
+              <button type="button" id="addTaskBtn" class="btn btn-primary btn-sm">Add Task</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Add task
+      $("#addTaskBtn").on("click", function() {
+        var task = $("#taskInput").val().trim();
+        if (task !== "") {
+          var listItem = $("<li>").text(task);
+          var checkbox = $("<input>").attr("type", "checkbox");
+          var deleteBtn = $("<span>").addClass("delete-btn").html('<i class="fas fa-trash"></i>');
+
+          listItem.prepend(checkbox);
+          listItem.append(deleteBtn);
+          $(".task-list").append(listItem);
+          $("#taskInput").val("");
+        }
+      });
+
+      // Remove task
+      $(document).on("click", ".delete-btn", function() {
+        $(this).parent().remove();
+      });
+
+      // Mark task as completed
+      $(document).on("change", ".task-list input[type='checkbox']", function() {
+        var listItem = $(this).parent();
+        if (this.checked) {
+          listItem.addClass("completed");
+        } else {
+          listItem.removeClass("completed");
+        }
+      });
+    });
+  </script>
+</body>
+</html>
