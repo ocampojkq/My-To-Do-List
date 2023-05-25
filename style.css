@@ -52,7 +52,7 @@ body {
 
   .task-list .completed {
     text-decoration: line-through;
-    color: #888;
+    color: #ff0000;
   }
 
   .task-list input[type="checkbox"] {
@@ -66,6 +66,8 @@ body {
 
   .task-list .delete-btn:hover {
     text-decoration: underline;
+ 
+  
   }
 
   .add-task-form {
